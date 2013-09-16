@@ -1,0 +1,7 @@
+## Interface: 50200
+## Title: IoTRares
+## Version: 1.00
+## Author: Ridcully
+## Notes: Sends spawn/kill events to general channel
+
+IoTRares.lua
