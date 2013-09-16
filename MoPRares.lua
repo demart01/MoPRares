@@ -1,6 +1,6 @@
 local _
 local frame	= CreateFrame("Frame", nil, UIParent)
-local textframe = CreateFrame("Frame", "IoTRaresText", UIParent)
+local textframe = CreateFrame("Frame", "MoPRaresText", UIParent)
 textframe:SetSize(200,25)
 textframe:SetPoint("LEFT",200,100)
 textframe:SetMovable(true)
@@ -29,6 +29,41 @@ local mobs = {
 	[70001] = {0, 0, 0},
 	[70002] = {0, 0, 0},
 	[70003] = {0, 0, 0},
+	[73158] = {0, 0, 0},
+	[73160] = {0, 0, 0},
+	[73161] = {0, 0, 0},
+	[72909] = {0, 0, 0},
+	[72245] = {0, 0, 0},
+	[71919] = {0, 0, 0},
+	[72193] = {0, 0, 0},
+	[72045] = {0, 0, 0},
+	[71864] = {0, 0, 0},
+	[73854] = {0, 0, 0},
+	[72048] = {0, 0, 0},
+	[72769] = {0, 0, 0},
+	[73277] = {0, 0, 0},
+	[72775] = {0, 0, 0},
+	[73282] = {0, 0, 0},
+	[72808] = {0, 0, 0},
+	[73166] = {0, 0, 0},
+	[73163] = {0, 0, 0},
+	[73157] = {0, 0, 0},
+	[73170] = {0, 0, 0},
+	[73169] = {0, 0, 0},
+	[73171] = {0, 0, 0},
+	[73175] = {0, 0, 0},
+	[73173] = {0, 0, 0},
+	[73172] = {0, 0, 0},
+	[73167] = {0, 0, 0},
+	[72970] = {0, 0, 0},
+	[73279] = {0, 0, 0},
+	[73281] = {0, 0, 0},
+	[73174] = {0, 0, 0},
+	[72032] = {0, 0, 0},
+	[73666] = {0, 0, 0},
+	[73281] = {0, 0, 0},
+	[73854] = {0, 0, 0},
+	[7277] = {0, 0, 0},
 	--[69384] = {0, 0, 0}, --test crab
 }
 local message
@@ -55,6 +90,12 @@ end
 
 local function init()
 	if GetCurrentMapAreaID() == 928 then
+		frame:RegisterEvent("CHAT_MSG_CHANNEL")
+		frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+		frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		textframe:Show()
+		textframe:SetScript("OnUpdate", DeathTimes)
+	elseif GetCurrentMapAreaID() == 951 then
 		frame:RegisterEvent("CHAT_MSG_CHANNEL")
 		frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 		frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
