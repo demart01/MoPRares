@@ -1,7 +1,7 @@
-## Interface: 50200
-## Title: IoTRares
-## Version: 1.00
-## Author: Ridcully
-## Notes: Sends spawn/kill events to general channel
+## Interface: 50400
+## Title: MoPRares
+## Version: 1.02
+## Author: Nirgali42
+## Notes: Sends Rare spawn announcements to general for MoP Isles.
 
-IoTRares.lua
+MoPRares.lua
