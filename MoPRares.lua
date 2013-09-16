@@ -89,13 +89,8 @@ local function DeathTimes(self,elapsed)
 end
 
 local function init()
-	if GetCurrentMapAreaID() == 928 then
-		frame:RegisterEvent("CHAT_MSG_CHANNEL")
-		frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-		frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		textframe:Show()
-		textframe:SetScript("OnUpdate", DeathTimes)
-	elseif GetCurrentMapAreaID() == 951 then
+	local current_map_id = GetCurrentMapAreaID();
+	if current_map_id == 928 or current_map_id == 951 then
 		frame:RegisterEvent("CHAT_MSG_CHANNEL")
 		frame:RegisterEvent("PLAYER_TARGET_CHANGED")
 		frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
