@@ -63,7 +63,7 @@ local mobs = {
 	[73666] = {0, 0, 0},
 	[73281] = {0, 0, 0},
 	[73854] = {0, 0, 0},
-	[7277] = {0, 0, 0},
+	[72775] = {0, 0, 0},
 	--[69384] = {0, 0, 0}, --test crab
 }
 local message
@@ -108,7 +108,7 @@ end
 local function update(self,elapsed)
     timer = timer + elapsed;
     if timer >= throttle then
-		if mobs[message_mob_id][1] + 10 < GetTime() then
+		if mobs[message_mob_id][1] + 30 < GetTime() then
 			SendChatMessage(message , "CHANNEL", nil, 1)
 		end
         timer = 0
@@ -124,7 +124,7 @@ end
 local function events(frame, event, ...)
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local _,event_type,_,_,_,_,_,guid,name = select(1, ...)
-		if event_type == "UNIT_DIED" then
+		if event_type == "UNIT_DIED" and guid == UnitGUID("target") then
 			local id = tonumber(guid:sub(6, 10), 16)
 			if not mobs[id] then return end
 			mobs[id][2] = GetTime()
@@ -140,7 +140,7 @@ local function events(frame, event, ...)
 			local name = UnitName("target")
 			local x, y = GetPlayerMapPosition("player")
 			local hp = math.floor(UnitHealth("target")*100/UnitHealthMax("target"))
-			message = "npc"..id..": "..name.." ("..hp.."%). Coordinates: "..math.floor(x*100)..", "..math.floor(y*100)
+			message = "npc"..id..": "..name.." ("..hp.."%). @ "..math.floor(x*100)..", "..math.floor(y*100)
 			message_mob_id = id
 			RandomizeTime()
 		end
@@ -148,7 +148,15 @@ local function events(frame, event, ...)
 		local msg,_,_,_,_,_,_,channel = select(1, ...)
 		if channel == 1 and string.sub(msg,1,3) == "npc" then
 			local id = tonumber(string.sub(msg,4,8))
-			if mobs[id] then mobs[id][1] = GetTime() end
+			if mobs[id] then 
+				mobs[id][1] = GetTime()
+				if string.find(msg,'%(0%%%)') then 
+					mobs[id][2] = GetTime()
+					mobs[id][3] = string.match(msg,'[%a%s]*[^%(]',11)
+					message_mob_id = id
+					RandomizeTime()
+				end
+			end
 		end
 	elseif(event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA") then
 		init()
