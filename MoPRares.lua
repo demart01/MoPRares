@@ -147,6 +147,8 @@ local function events(frame, event, ...)
 			local name = UnitName("target")
 			local x, y = GetPlayerMapPosition("player")
 			local hp = math.floor(UnitHealth("target")*100/UnitHealthMax("target"))
+			mobs[id][2] = 0
+			mobs[id][4] = false
 			message = "npc"..id..": "..name.." ("..hp.."%). @ "..math.floor(x*100)..", "..math.floor(y*100)
 			message_mob_id = id
 			RandomizeTime()
