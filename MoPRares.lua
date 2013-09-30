@@ -135,7 +135,7 @@ local function events(frame, event, ...)
 			local id = tonumber(guid:sub(6, 10), 16)
 			if not mobs[id] then return end
 			mobs[id][2] = GetTime()
-			mobs[id][3] = string.sub(name,1,20)
+			mobs[id][3] = name
 			message = "npc"..id..": "..name.." (0%)"
 			message_mob_id = id
 			RandomizeTime()
