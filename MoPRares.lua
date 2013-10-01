@@ -1,6 +1,7 @@
 local _
 local frame	= CreateFrame("Frame", nil, UIParent)
 local textframe = CreateFrame("Frame", "MoPRaresText", UIParent)
+local general_chat = GetChannelName("General")
 textframe:SetSize(220,25)
 textframe:SetPoint("LEFT",200,100)
 textframe:SetMovable(true)
@@ -111,12 +112,12 @@ local function update(self,elapsed)
 	if timer >= throttle then
 		if mobs[message_mob_id][4] then return end -- npc death was reported
 		if mobs[message_mob_id][2] > 0 then -- npc died but not reported
-			SendChatMessage(message , "CHANNEL", nil, 1)
+			SendChatMessage(message , "CHANNEL", nil, general_chat)
 			mobs[message_mob_id][4] = true
 			return
 		end
 		if mobs[message_mob_id][1] + 30 < GetTime() then -- npc spotted but not not reported
-			SendChatMessage(message , "CHANNEL", nil, 1)
+			SendChatMessage(message , "CHANNEL", nil, general_chat)
 		end
         	timer = 0
 		frame:SetScript("OnUpdate", nil)
@@ -162,7 +163,7 @@ local function events(frame, event, ...)
 				if string.find(msg,'%(0%%%)') then 
 					mobs[id][2] = GetTime()
 					mobs[id][4] = true
-					mobs[id][3] = string.match(msg,'.*[^%(]',11)
+					mobs[id][3] = string.match(msg,"[%a%s%-\']*",11)
 				else
 					mobs[id][2] = 0
 					mobs[id][4] = false
