@@ -1,7 +1,6 @@
 local _
 local frame	= CreateFrame("Frame", nil, UIParent)
 local textframe = CreateFrame("Frame", "MoPRaresText", UIParent)
-local general_chat = GetChannelName("General")
 textframe:SetSize(220,25)
 textframe:SetPoint("LEFT",200,100)
 textframe:SetMovable(true)
@@ -17,7 +16,6 @@ textframe.text = textframe:CreateFontString(nil, "OVERLAY")
 textframe.text:SetPoint("TOPLEFT", 10, -10)
 textframe.text:SetFont("Fonts\\ARIALN.TTF",13,"OUTLINE")
 textframe.text:SetTextColor(1,0.8,0,1)
-
 local mobs = {
 	-- npc_id = {message sent, died time, name, death reported}
 	[50358] = {0, 0, 0, 0},
@@ -107,16 +105,30 @@ local function init()
 	end
 end
 
+local function getGeneral(...)
+	for i = 1, select("#", ...), 1 do
+		local id, name = select(i, ...)
+		if not string.match(name,'General', ...) == nil then return id end
+	end
+end	
+local general_chat = getGeneral(GetChannelList())
+
 local function update(self,elapsed)
 	timer = timer + elapsed;
 	if timer >= throttle then
-		if mobs[message_mob_id][4] then return end -- npc death was reported
+		if mobs[message_mob_id][4] then
+			SendChatMessage("npc death reported", "WHISPER", nil, "Nirgáli")
+			return
+		end -- npc death was reported
 		if mobs[message_mob_id][2] > 0 then -- npc died but not reported
+			SendChatMessage("npc death not reported", "WHISPER", nil, "Nirgáli")
 			SendChatMessage(message , "CHANNEL", nil, general_chat)
 			mobs[message_mob_id][4] = true
 			return
 		end
+		SendChatMessage("npc still alive", "WHISPER", nil, "Nirgáli")
 		if mobs[message_mob_id][1] + 30 < GetTime() then -- npc spotted but not not reported
+			SendChatMessage("report npc health", "WHISPER", nil, "Nirgáli")
 			SendChatMessage(message , "CHANNEL", nil, general_chat)
 		end
         	timer = 0
