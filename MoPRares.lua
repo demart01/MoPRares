@@ -70,6 +70,7 @@ local message
 local message_mob_id
 local timer, throttle = 0, 3
 local text_timer, text_throttle = 0, 10
+local general_chat
 
 local function DeathTimes(self,elapsed)
 	text_timer = text_timer + elapsed
@@ -88,8 +89,17 @@ local function DeathTimes(self,elapsed)
 	end
 end
 
+local function getGeneral(id, name, ...)
+	if id and name then
+		if strfind(name, GENERAL) then
+			return id
+		end
+	return getGeneral(...)
+	end
+end
+	
 local function init()
-	local current_map_id = GetCurrentMapAreaID();
+    local current_map_id = GetCurrentMapAreaID();
 	if current_map_id == 928 or current_map_id == 951 then
 		frame:RegisterEvent("CHAT_MSG_CHANNEL")
 		frame:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -105,28 +115,16 @@ local function init()
 	end
 end
 
-local function getGeneral(...)
-	for i = 1, select("#", ...), 2 do
-		local id, name = select(i, ...)
-		if not string.match(name,'General', ...) == nil then 
-			SendChatMessage(name..":"..id, "WHISPER", nil, "Nirgáli")
-			return id
-		end
-	end
-end	
-local general_chat = getGeneral(GetChannelList())
-
 local function update(self,elapsed)
 	timer = timer + elapsed;
 	if timer >= throttle then
-		if mobs[message_mob_id][4] == true then
-			SendChatMessage("npc death reported", "WHISPER", nil, "Nirgáli")
+		general_chat = getGeneral(GetChannelList())
+		if mobs[message_mob_id][4] == true then -- npc death reported
+			timer = 0
 		elseif mobs[message_mob_id][2] > 0 then -- npc died but not reported
-			SendChatMessage("npc death not reported", "WHISPER", nil, "Nirgáli")
 			SendChatMessage(message , "CHANNEL", nil, general_chat)
 			mobs[message_mob_id][4] = true
 		elseif mobs[message_mob_id][1] + 30 < GetTime() then -- npc spotted but not not reported
-			SendChatMessage("report npc health", "WHISPER", nil, "Nirgáli")
 			SendChatMessage(message , "CHANNEL", nil, general_chat)
 		end
         timer = 0
