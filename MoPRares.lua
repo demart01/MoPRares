@@ -1,7 +1,6 @@
 local _
 local frame	= CreateFrame("Frame", nil, UIParent)
 local textframe = CreateFrame("Frame", "MoPRaresText", UIParent)
-local general_chat = GetChannelName("General")
 textframe:SetSize(220,25)
 textframe:SetPoint("LEFT",200,100)
 textframe:SetMovable(true)
@@ -17,7 +16,6 @@ textframe.text = textframe:CreateFontString(nil, "OVERLAY")
 textframe.text:SetPoint("TOPLEFT", 10, -10)
 textframe.text:SetFont("Fonts\\ARIALN.TTF",13,"OUTLINE")
 textframe.text:SetTextColor(1,0.8,0,1)
-
 local mobs = {
 	-- npc_id = {message sent, died time, name, death reported}
 	[50358] = {0, 0, 0, 0},
@@ -72,6 +70,7 @@ local message
 local message_mob_id
 local timer, throttle = 0, 3
 local text_timer, text_throttle = 0, 10
+local general_chat
 
 local function DeathTimes(self,elapsed)
 	text_timer = text_timer + elapsed
@@ -90,8 +89,17 @@ local function DeathTimes(self,elapsed)
 	end
 end
 
+local function getGeneral(id, name, ...)
+	if id and name then
+		if strfind(name, GENERAL) then
+			return id
+		end
+	return getGeneral(...)
+	end
+end
+	
 local function init()
-	local current_map_id = GetCurrentMapAreaID();
+    local current_map_id = GetCurrentMapAreaID();
 	if current_map_id == 928 or current_map_id == 951 then
 		frame:RegisterEvent("CHAT_MSG_CHANNEL")
 		frame:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -110,22 +118,22 @@ end
 local function update(self,elapsed)
 	timer = timer + elapsed;
 	if timer >= throttle then
-		if mobs[message_mob_id][4] then return end -- npc death was reported
-		if mobs[message_mob_id][2] > 0 then -- npc died but not reported
+		general_chat = getGeneral(GetChannelList())
+		if mobs[message_mob_id][4] == true then -- npc death reported
+			timer = 0
+		elseif mobs[message_mob_id][2] > 0 then -- npc died but not reported
 			SendChatMessage(message , "CHANNEL", nil, general_chat)
 			mobs[message_mob_id][4] = true
-			return
-		end
-		if mobs[message_mob_id][1] + 30 < GetTime() then -- npc spotted but not not reported
+		elseif mobs[message_mob_id][1] + 30 < GetTime() then -- npc spotted but not not reported
 			SendChatMessage(message , "CHANNEL", nil, general_chat)
 		end
-        	timer = 0
+        timer = 0
 		frame:SetScript("OnUpdate", nil)
 	end
 end
 
 local function RandomizeTime()
-	throttle = math.random()*3
+	throttle = math.random()*2
 	frame:SetScript("OnUpdate", update)
 end
 
