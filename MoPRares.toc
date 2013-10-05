@@ -1,6 +1,6 @@
 ## Interface: 50400
 ## Title: MoPRares
-## Version: 1.02
+## Version: 1.1.3
 ## Author: Nirgali42
 ## Notes: Sends Rare spawn announcements to general for MoP Isles.
 
