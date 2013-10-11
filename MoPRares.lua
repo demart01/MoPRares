@@ -171,7 +171,7 @@ local function events(frame, event, ...)
 				if string.find(msg,'%(0%%%)') then 
 					mobs[id][2] = GetTime()
 					mobs[id][4] = true
-					mobs[id][3] = string.match(msg,"[%a%s%-\']*",11)
+					mobs[id][3] = string.match(msg,"[^\(]*",11)
 				else
 					mobs[id][2] = 0
 					mobs[id][4] = false
