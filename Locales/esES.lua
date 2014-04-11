@@ -1,4 +1,4 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("MoPRares", "enUS", true)
+local L = LibStub("AceLocale-3.0"):NewLocale("MoPRares", "esES", true)
 if L then
 	L["Haywire Sunreaver Construct"] = "Ensamblaje Atracasol descontrolado" --50358
 	L["Mumta"] = "Mumta" --69664
