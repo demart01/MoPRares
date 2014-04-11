@@ -1,7 +1,19 @@
-## Interface: 50400
+﻿## Interface: 50400
 ## Title: MoPRares
-## Version: 1.1.3
+## Version: 1.1.5
 ## Author: Nirgali42
 ## Notes: Sends Rare spawn announcements to general for MoP Isles.
+## OptionalDeps: Ace3, LibStub
 
+#@no-lib-strip@ 
+Libs\LibStub\LibStub.lua
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceAddon-3.0\AceLocale-3.0.xml
+#@end-no-lib-strip@
+
+Locales\deDE.lua
+Locales\enUS.lua
+Locales\esES.lua
+Locales\frFR.lua
+Locales\ruRU.lua
 MoPRares.lua
