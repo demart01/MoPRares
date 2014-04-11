@@ -1,7 +1,7 @@
 MoPRares = LibStub("AceAddon-3.0"):NewAddon("MoPRares")
 local L = LibStub("AceLocale-3.0"):GetLocale("MoPRares", true)
 
-local debug = 0
+local debug = 1
 
 local _
 local frame	= CreateFrame("Frame", nil, UIParent)
@@ -67,10 +67,8 @@ local mobs = {
 	[73704] = {0, 0, L["Stinkbraid"], 0, 0, 0, 0, 0},
 	[73854] = {0, 0, L["Cranegnasher"], 0, 0, 0, 0, 0},
 }
--- support for cross-localized checking. Non-english clients may receive 
--- announcements in english as well as their native language from other addons
--- also making moprares backwards compatible with its pre-localized releases
--- this array is simply to check against and convert the english into native
+-- Map english names to localized names for compatibility with earlier versions and other english addons
+-- Note: see locales/* for actual localization maps
 local mobsEN = {}
 mobsEN["Haywire Sunreaver Construct"] = L["Haywire Sunreaver Construct"]
 mobsEN["Mumta"] = L["Mumta"]
@@ -187,10 +185,6 @@ local function DeathTimes(self,elapsed)
 			if mobs[id][2] > 0 and (currentTime - mobs[id][2]) < 3601 then
 				text = text .. mobs[id][3] .. " : " .. SecondsToTime(currentTime - mobs[id][2], true) .. "\n"
 				count = count + 1
-				-- sometimes deaths aren't announced, so remove waypoint
-				if mobs[id][7] == 1 then
-					removeWaypoint(id)
-				end
 			end
 		end
 		textframe.text:SetText(text)
@@ -236,18 +230,10 @@ local function announce(self,elapsed)
 		if mobs[message_mob_id][4] == true then -- npc death reported
 			timer = 0
 		elseif mobs[message_mob_id][2] > 0 then -- npc died but not reported
-		    if debug == 1 then
-		    	print(message)
-		    else
-				SendChatMessage(message , "CHANNEL", nil, general_chat)
-			end
+			SendChatMessage(message , "CHANNEL", nil, general_chat)
 			mobs[message_mob_id][4] = true
 		elseif mobs[message_mob_id][1] + 30 < GetTime() then -- npc spotted but not reported
-		    if debug == 1 then
-		    	print(message)
-		    else
-				SendChatMessage(message , "CHANNEL", nil, general_chat)
-			end
+			SendChatMessage(message , "CHANNEL", nil, general_chat)
 		end
         timer = 0
 		frame:SetScript("OnUpdate", nil)
@@ -305,15 +291,8 @@ local function events(frame, event, ...)
 		local msg,author,_,_,_,_,_,channel = select(1, ...)
 		general_chat = getGeneral(GetChannelList())
 		if channel == general_chat then
-		    -- Backwards compatibility
+		    -- Backwards compatibility 1.1.4 and earlier
 			if string.sub(msg,1,3) == "npc" then
-				-- backwards compatible with earlier versions of moprares
-				local index = 0
-				if string.find(msg,"Coordinates:") then
-					index = string.find(msg, "nates:")+6
-				else
-					index = string.find(msg, "@")+2
-				end
 				local id = tonumber(string.sub(msg,4,8))
 				if mobs[id] then
 					mobs[id][1] = GetTime()
@@ -324,6 +303,14 @@ local function events(frame, event, ...)
 						removeWaypoint(id)
 					-- npc12345: Name (100%) @ 50, 50
 					else
+						local index = 0
+						if string.find(msg,"Coordinates:") then
+						    -- older format
+							index = string.find(msg, "nates:")+6
+						else
+							-- newer format
+							index = string.find(msg, "@")+2
+						end
 						mobs[id][2] = 0
 						mobs[id][4] = false
 						mobs[id][5] = string.match(msg,"[^,]+",index)
