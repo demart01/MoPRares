@@ -186,6 +186,9 @@ local function DeathTimes(self,elapsed)
 				text = text .. mobs[id][3] .. " : " .. SecondsToTime(currentTime - mobs[id][2], true) .. "\n"
 				count = count + 1
 			end
+			if waypoints[id] ~= nil and (currentTime - mobs[id][1]) >= 60 then
+				removeWaypoint[id]
+			end
 		end
 		textframe.text:SetText(text)
 		textframe:SetHeight(25 + count*13)
@@ -342,6 +345,7 @@ local function events(frame, event, ...)
 					local id = getNPCId(getNPCName(name))
 					print_d(id)
 					if id ~= 42 then
+						mobs[id][1] = GetTime()
 						mobs[id][2] = 0
 						mobs[id][4] = false
 						mobs[id][5] = string.match(msg,"[^,]+",string.find(msg, "@")+2)
@@ -377,6 +381,7 @@ local function events(frame, event, ...)
 					local id = getNPCId(getNPCName(name))
 					print_d(id)
 					if id ~= 42 then
+						mobs[id][1] = GetTime()
 						mobs[id][2] = 0
 						mobs[id][4] = false
 						mobs[id][5] = string.match(msg,"[^,]+",string.find(msg, "nates:")+6)
@@ -407,6 +412,7 @@ local function events(frame, event, ...)
 					local id = getNPCId(getNPCName(name))
 					print_d(id)
 					if id ~= 42 then
+						mobs[id][1] = GetTime()
 						mobs[id][2] = 0
 						mobs[id][4] = false
 						mobs[id][5] = string.match(msg,"[^,]+",string.find(msg, "around")+7)
@@ -437,6 +443,7 @@ local function events(frame, event, ...)
 					local id = getNPCId(getNPCName(name))
 					print_d(id)
 					if id ~= 42 then
+						mobs[id][1] = GetTime()
 						mobs[id][2] = 0
 						mobs[id][4] = false
 						mobs[id][5] = string.match(msg,"%d+%.?%d*",string.find(msg, ":")+2)
